@@ -1,8 +1,7 @@
 <template>
-
   <div class="d-flex justify-center my-8">
     <h1>Lista de Alunos</h1>
-</div>
+  </div>
   <v-container>
     <v-row>
       <v-col>
@@ -30,16 +29,49 @@
           <td>{{ item.name }}</td> 
           <td>{{ item.cpf }}</td> 
           <td class="d-flex justify-center">
-            <v-btn @click="editarAluno(item)" color="blue" icon>
+            <v-btn @click="editStudents(item)" color="blue" icon>
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn @click="excluirAluno(item.id)" color="red" icon>
+            <v-btn @click="openDeleteDialog(item.id)" color="red" icon>
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </td>
         </tr>
       </template>
     </v-data-table>
+
+    <v-dialog v-model="deleteDialogVisible" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Confirmar Exclusão</span>
+        </v-card-title>
+        <v-card-text>
+          Tem certeza que deseja excluir este aluno?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="deleteStudentConfirmed" color="red">Excluir</v-btn>
+          <v-btn @click="deleteDialogVisible = false" color="secondary">Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="dialogVisible" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Editar Aluno</span>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field v-model="currentStudent.name" label="Nome"></v-text-field>
+          <v-text-field v-model="currentStudent.ra" label="RA" disabled></v-text-field>
+          <v-text-field v-model="currentStudent.cpf" label="CPF" disabled></v-text-field>
+          <v-text-field v-model="currentStudent.email" label="Email"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="salvarAlteracoes">Salvar</v-btn>
+          <v-btn @click="dialogVisible = false">Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -58,6 +90,10 @@ export default {
         { title: 'CPF', align: 'start', key: 'cpf', sortable: true },
         { title: 'Ações', align: 'center', key: 'actions' },
       ],
+      dialogVisible: false, 
+      deleteDialogVisible: false, 
+      currentStudent: {}, 
+      studentToDeleteId: null, 
     };
   },
   mounted() {
@@ -75,24 +111,43 @@ export default {
           console.error('Erro ao carregar alunos:', error);
         });
     },
-    editarAluno(aluno) {
-      this.$router.push({ name: 'editar', params: { id: aluno.id } });
+    editStudents(studentSelect) {
+      this.currentStudent = { ...studentSelect }; 
+      this.dialogVisible = true; 
     },
-    excluirAluno(id) {
-      if (confirm('Tem certeza que deseja excluir este aluno?')) {
-        const apiUrl = process.env.VUE_APP_BACKEND_URL;
-        axios
-          .delete(`${apiUrl}/api/student/${id}`)
-          .then(response => {
-            console.log(response)
-            this.loadStudents();
-            alert('Aluno excluído com sucesso!');
-          })
-          .catch(error => {
-            console.error('Erro ao excluir aluno:', error);
-            alert('Erro ao excluir aluno.');
-          });
-      }
+    openDeleteDialog(id) {
+      this.studentToDeleteId = id;  
+      this.deleteDialogVisible = true;
+    },
+      deleteStudentConfirmed() {
+      const apiUrl = process.env.VUE_APP_BACKEND_URL;
+      axios
+        .delete(`${apiUrl}/api/student/${this.studentToDeleteId}`)
+        .then(response => {
+          console.log(response)
+          this.loadStudents(); 
+          this.deleteDialogVisible = false;  
+          this.$toast.success('Aluno excluído com sucesso!');
+        })
+        .catch(error => {
+          console.error('Erro ao excluir aluno:', error);
+          this.$toast.error('Erro ao excluir aluno.');
+        });
+    },
+    salvarAlteracoes() {
+      const apiUrl = process.env.VUE_APP_BACKEND_URL;
+      axios
+        .put(`${apiUrl}/api/student/${this.currentStudent.id}`, this.currentStudent)
+        .then(response => {
+          console.log(response)
+          this.dialogVisible = false;
+          this.loadStudents();
+          this.$toast.success('Aluno atualizado com sucesso!');
+        })
+        .catch(error => {
+          console.error('Erro ao salvar as alterações:', error);
+          this.$toast.error('Erro ao salvar as alterações.');
+        });
     },
   },
 };

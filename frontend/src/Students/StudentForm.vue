@@ -42,7 +42,7 @@ export default {
                     this.$router.push('/alunos');
                 })
                 .catch(error => {
-                    console.error('Erro ao salvar aluno:', error);
+                    this.$toast.error('Erro ao salvar aluno:', error);
                 });
         },
         cancelar() {

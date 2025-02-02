@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Mvc; // Necessário para ControllerBase, ApiController, etc.
-using Backend.Data; // Para o ApplicationDbContext
-using Backend.Models; // Para o modelo Student
-using Microsoft.EntityFrameworkCore; // Para o Entity Framework
-
+using Microsoft.AspNetCore.Mvc;
+using Backend.Data;
+using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -33,5 +32,60 @@ public class StudentController : ControllerBase
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetStudents), new { id = student.Id }, student);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutStudent(int id, [FromBody] Student updatedStudent)
+    {
+        if (updatedStudent == null)
+        {
+            return BadRequest("Dados inválidos.");
+        }
+
+        var student = await _context.Students.FindAsync(id);
+        if (student == null)
+        {
+            return NotFound("Aluno não encontrado.");
+        }
+
+        student.Name = updatedStudent.Name;
+        student.Email = updatedStudent.Email;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!StudentExists(id))
+            {
+                return NotFound("Aluno não encontrado.");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteStudent(int id)
+    {
+        var student = await _context.Students.FindAsync(id);
+        if (student == null)
+        {
+            return NotFound("Aluno não encontrado.");
+        }
+
+        _context.Students.Remove(student);
+        await _context.SaveChangesAsync();
+        return NoContent();  
+    }
+
+    private bool StudentExists(int id)
+    {
+        return _context.Students.Any(e => e.Id == id);
     }
 }
