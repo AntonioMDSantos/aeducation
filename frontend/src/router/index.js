@@ -1,12 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import StudentList from '../Students/StudentList.vue';
 import StudentForm from '../Students/StudentForm.vue';
+import HomePage from "../Home/HomePage.vue";
 
 const routes = [
   {
     path: '/list',
     name: 'list',  
     component: StudentList
+  },
+  {
+    path: '/',
+    name: 'home',  
+    component: HomePage
   },
   {
     path: '/create',

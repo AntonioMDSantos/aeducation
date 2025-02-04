@@ -1,21 +1,28 @@
 <template>
-    <div class="d-flex justify-center my-8">
+    <div class="d-flex justify-center my-8 mt-16">
         <h1>Cadastro de Alunos</h1>
     </div>
-    <v-form @submit.prevent="salvarAluno">
-        <v-text-field label="Nome" v-model="aluno.name" :rules="[rules.required]" required />
-        <v-text-field label="Email" v-model="aluno.email" :rules="[rules.required]" required />
-        <v-text-field label="RA" v-model="aluno.ra" required />
-        <v-text-field label="CPF" v-model="aluno.cpf" required />
-        <div class="d-flex justify-center">
-            <v-btn class="mr-5" @click="cancelar" color="red">Cancelar</v-btn>
-            <v-btn class="ml-5" type="submit" color="primary">Salvar</v-btn>
-        </div>
-    </v-form>
+    <div class="d-flex justify-center">
+        <v-form style="width: 40rem;" @submit.prevent="salvarAluno">
+            <v-text-field variant="outlined" label="Nome" v-model="aluno.name" :rules="[rules.required]" required />
+            <v-text-field variant="outlined" label="Email" v-model="aluno.email" :rules="[rules.required]" required />
+            <v-text-field variant="outlined" label="RA" v-model="aluno.ra" :rules="[rules.required]" required />
+            <v-text-field variant="outlined" label="CPF" v-model="aluno.cpf" :rules="[rules.required]" required />
+            <div class="d-flex">
+                <div class="w-50">
+                    <v-btn class="w-50 py-6 d-flex justify-center" @click="cancelar" color="#fa0000">Cancelar</v-btn>
+                </div>
+                <div class="w-50 d-flex justify-end">
+                    <v-btn class="w-50 py-6 d-flex justify-center" type="submit" color="#0013fa">Salvar</v-btn>
+                </div>
+            </div>
+
+        </v-form>
+    </div>
 </template>
-  
+
 <script>
-import axios from 'axios'; 
+import axios from 'axios';
 
 export default {
     name: 'StudentForm',
@@ -24,8 +31,8 @@ export default {
             aluno: {
                 name: '',
                 email: '',
-                ra: '', 
-                cpf: '', 
+                ra: '',
+                cpf: '',
             },
             rules: {
                 required: value => !!value || 'Este campo é obrigatório',
@@ -34,7 +41,7 @@ export default {
     },
     methods: {
         salvarAluno() {
-            const apiUrl = process.env.VUE_APP_BACKEND_URL; 
+            const apiUrl = process.env.VUE_APP_BACKEND_URL;
             axios.post(`${apiUrl}/api/student`, this.aluno)
 
                 .then(response => {
@@ -52,4 +59,3 @@ export default {
 };
 
 </script>
-  
