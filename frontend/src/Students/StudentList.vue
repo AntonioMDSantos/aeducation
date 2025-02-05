@@ -13,7 +13,7 @@
             </v-col>
           </v-row>
 
-          <v-data-table style="width: 40rem;" :headers="headers" :items="students" item-key="id" :items-per-page="5"
+          <v-data-table style="width: auto;" :headers="headers" :items="students" item-key="id" :items-per-page="5"
             class="elevation-1 " :search="search" dense>
             <template v-slot:item="{ item }">
               <tr>

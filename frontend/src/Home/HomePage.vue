@@ -3,6 +3,7 @@
         <div class="d-flex justify-center">
             <v-img :width="400" src="../assets/logo-mais-a-educacao.svg"></v-img>
         </div>
+        
     </div>
 </template>
 
