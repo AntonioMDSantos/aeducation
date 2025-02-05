@@ -104,9 +104,12 @@ As seguintes ferramentas foram usadas na construção do projeto:
 -   Editor:  **[Visual Studio Code](https://code.visualstudio.com/)**
 -   Teste de API:  **[Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)**
 
-
 ---
 
+
+### O que você melhoraria se tivesse mais tempo?
+Acredito que eu tivesse feito uma tela de login (para professores) e caso logado conseguisse acessar o cadastro e a listagem
+Teria tambem feito uma splashScreen para o mobile
 
 ## 🦸 Autor
 
